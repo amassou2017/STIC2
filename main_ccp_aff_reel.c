@@ -47,12 +47,78 @@
 unsigned char last_button, pushed_button, ccpconfig;
 unsigned int d,last_ccp,current_ccp;
 
+const unsigned short CharTable[51]={
+    0x80, // '-'
+    0x01, // '.'   Sevensegment bit order
+    0x00, // '/'   (g)(f)(e)(d)(c)(a)(b)(dp)
+    0x7E, // '0'
+    0x0A, // '1'    _a_
+    0xB6, // '2'  f|   |b
+    0x9E, // '3'   |_g_|
+    0xCA, // '4'  e|   |c
+    0xDC, // '5'   |_d_|.dp
+    0xFC, // '6'
+    0x0E, // '7'
+    0xFE, // '8'
+    0xDE, // '9'
+    0x00, // ':'
+    0x00, // ';'
+    0x00, // '<'
+    0x00, // '='
+    0x00, // '>'
+    0x00, // '?'
+    0x00, // '@'
+    0xEE, // 'A'
+    0xF8, // 'B'
+    0x74, // 'C'
+    0xBA, // 'D'
+    0xF4, // 'E'
+    0xE4, // 'F'
+    0x7C, // 'G'
+    0xEA, // 'H'
+    0x0A, // 'I'
+    0x3A, // 'J'
+    0x00, // 'K'
+    0x70, // 'L'
+    0x00, // 'M'
+    0x6E, // 'N'
+    0x00, // 'O'
+    0xE6, // 'P'
+    0xCE, // 'Q'
+    0x64, // 'R'
+    0xDC, // 'S'
+    0xF0, // 'T'
+    0x7A, // 'U'
+    0x00, // 'V'
+    0x00, // 'W'
+    0x00, // 'X'
+    0xDA, // 'Y'
+    0x00, // 'Z'
+    0x00, // '['
+    0x00, // '/'
+    0x00, // ']'
+    0x00, // '^'
+    0x10, // '_'
+};
+const unsigned short IntTable[10]={
+                // (g)(f)(e)(d)(c)(a)(b)(dp)
+    0x7E, // '0'
+    0x0A, // '1'    _a_
+    0xB6, // '2'  f|   |b
+    0x9E, // '3'   |_g_|
+    0xCA, // '4'  e|   |c
+    0xDC, // '5'   |_d_|.dp
+    0xFC, // '6'
+    0x0E, // '7'
+    0xFE, // '8'
+    0xDE, // '9
+};
 void display(char a, char b)
 {
-    SSPBUF=a;
+    SSPBUF=b;
     while(PIR1bits.SSPIF==0);
     PIR1bits.SSPIF=0;  
-    SSPBUF=b;
+    SSPBUF=a;
     while(PIR1bits.SSPIF==0);
      PIR1bits.SSPIF=0;  
     LATCH=0;
@@ -112,13 +178,13 @@ void main(void)
     SSPSTATbits.CKE=1;// data transmitted on rising edge
     
     
-    display(0xF0,0xF0);
+    display(IntTable[0],IntTable[1]);
        
     __delay_ms(500);
     // reset display
     display_rst();
     
-    display(0x0F,0x0F);
+    display(IntTable[0],IntTable[2]);
     // Write your code here
    while (1)
    {
